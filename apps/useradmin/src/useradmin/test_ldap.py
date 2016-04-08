@@ -476,10 +476,7 @@ class TestUserAdminLdap(BaseUserAdminTests):
 
       # Test upper case
       User.objects.filter(username__iexact='rock').delete()
-      import_ldap_users(ldap_access.CACHED_LDAP_CONN, 'rock', sync_groups=False, import_by_dn=False)
-      assert_false(User.objects.filter(username='Rock').exists())
-      assert_true(User.objects.filter(username='ROCK').exists())
-
+      done.append(desktop.conf.LDAP.FORCE_USERNAME_LOWERCASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_UPPERCASE.set_for_testing(True))
 
       import_ldap_users(ldap_access.CACHED_LDAP_CONN, 'Rock', sync_groups=False, import_by_dn=False)
@@ -549,8 +546,9 @@ class TestUserAdminLdap(BaseUserAdminTests):
       assert_true(User.objects.filter(username='rock').exists())
 
       # Test upper case
+      done.append(desktop.conf.LDAP.FORCE_USERNAME_LOWERCASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_UPPERCASE.set_for_testing(True))
-      User.objects.filter(username__iexact='Rock').delete()
+      User.objects.filter(username='rock').delete()
       assert_false(User.objects.filter(username='Rock').exists())
       assert_false(User.objects.filter(username='ROCK').exists())
       response = c.post(URL, dict(server='nonsense', username_pattern='ROCK', password1='test', password2='test'))

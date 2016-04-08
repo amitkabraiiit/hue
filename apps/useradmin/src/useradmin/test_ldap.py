@@ -476,6 +476,7 @@ class TestUserAdminLdap(BaseUserAdminTests):
 
       # Test upper case
       User.objects.filter(username__iexact='rock').delete()
+      done.append(desktop.conf.LDAP.IGNORE_USERNAME_CASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_LOWERCASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_UPPERCASE.set_for_testing(True))
 
@@ -546,6 +547,7 @@ class TestUserAdminLdap(BaseUserAdminTests):
       assert_true(User.objects.filter(username='rock').exists())
 
       # Test upper case
+      done.append(desktop.conf.LDAP.IGNORE_USERNAME_CASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_LOWERCASE.set_for_testing(False))
       done.append(desktop.conf.LDAP.FORCE_USERNAME_UPPERCASE.set_for_testing(True))
       User.objects.filter(username='rock').delete()
